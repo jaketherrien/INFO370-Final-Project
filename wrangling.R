@@ -60,14 +60,15 @@ gathered.score.data = gather(score.data, "year", "score", 2:7)
 write.csv(gathered.score.data, file = "Data/score_data_formatted.csv")
 
 #normalize the scores
-gathered.score.data$score    <- ifelse(gathered.data$year == '1995' | gathered.data$year == '2000', gathered.data$score/1600, gathered.data$score)
-gathered.score.data$score    <- ifelse(gathered.data$year == '2005' | gathered.data$year == '2010' | gathered.data$year == '2013' | gathered.data$year == '2014', gathered.data$score/2400, gathered.data$score)
+gathered.score.data$score    <- ifelse(gathered.score.data$year == '1995' | gathered.score.data$year == '2000', gathered.score.data$score/1600, gathered.score.data$score)
+gathered.score.data$score    <- ifelse(gathered.score.data$year == '2005' | gathered.score.data$year == '2010' | gathered.score.data$year == '2013' | gathered.score.data$year == '2014', gathered.score.data$score/2400, gathered.score.data$score)
 
 #formatting funding data "States" to match score data
 funding.data$State[funding.data$State == "National" | funding.data$State == "      National Total" | funding.data$State == "Total" | funding.data$State == "     Total"] <- "United States"
 
 #merge/join the data
 all.data = merge(funding.data, gathered.score.data, by=c("State","year"))
+write.csv(all.data, file = "Data/funding_and_scores.csv")
 
 
 
