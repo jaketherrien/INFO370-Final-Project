@@ -47,9 +47,6 @@ funding.data <- do.call("rbind", list(funding_1995, funding_1996, funding_1997, 
                       funding_2007, funding_2008, funding_2009, funding_2010, 
                       funding_2011, funding_2012, funding_2014))
 
-#all funding data together
-funding.data
-
 #writing to .csv
 write.csv(funding.data, file = "Data/funding_data_all_years.csv")
 
@@ -70,6 +67,13 @@ funding.data$State[funding.data$State == "National" | funding.data$State == "   
 all.data = merge(funding.data, gathered.score.data, by=c("State","year"))
 write.csv(all.data, file = "Data/funding_and_scores.csv")
 
+#convert money to numeric for statistical testing
+all.data$Mean = as.numeric(gsub('[$,]', '', all.data$Mean))
+all.data$Maximum = as.numeric(gsub('[$,]', '', all.data$Maximum))
+all.data$Minimum = as.numeric(gsub('[$,]', '', all.data$Minimum))
+
+#testing to see if there's a meaningful relationship between average funding and score
+t.test(all.data$Mean, all.data$score)
 
 
 
