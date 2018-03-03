@@ -57,3 +57,6 @@ write.csv(funding.data, file = "Data/funding_data_all_years.csv")
 library(tidyr)
 score.data = read.csv(file="Data/scores_data.csv", header=TRUE, sep=",", check.names=F)
 gathered.data = gather(score.data, "year", "score", 2:7)
+write.csv(funding.data, file = "Data/score_data_formatted.csv")
+
+
