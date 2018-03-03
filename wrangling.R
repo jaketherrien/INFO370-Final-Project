@@ -53,3 +53,7 @@ funding.data
 #writing to .csv
 write.csv(funding.data, file = "Data/funding_data_all_years.csv")
 
+#wrangle the test score data
+library(tidyr)
+score.data = read.csv(file="Data/scores_data.csv", header=TRUE, sep=",", check.names=F)
+gathered.data = gather(score.data, "year", "score", 2:7)
