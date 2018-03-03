@@ -59,5 +59,14 @@ score.data = read.csv(file="Data/scores_data.csv", header=TRUE, sep=",", check.n
 gathered.data = gather(score.data, "year", "score", 2:7)
 write.csv(gathered.data, file = "Data/score_data_formatted.csv")
 
+#normalize the scores
+gathered.data$score    <- ifelse(gathered.data$year == '1995' | gathered.data$year == '2000', gathered.data$score/1600, gathered.data$score)
+gathered.data$score    <- ifelse(gathered.data$year == '2005' | gathered.data$year == '2010' | gathered.data$year == '2013' | gathered.data$year == '2014', gathered.data$score/2400, gathered.data$score)
+
+
+
+
+
+
 
 
