@@ -63,6 +63,9 @@ write.csv(gathered.data, file = "Data/score_data_formatted.csv")
 gathered.data$score    <- ifelse(gathered.data$year == '1995' | gathered.data$year == '2000', gathered.data$score/1600, gathered.data$score)
 gathered.data$score    <- ifelse(gathered.data$year == '2005' | gathered.data$year == '2010' | gathered.data$year == '2013' | gathered.data$year == '2014', gathered.data$score/2400, gathered.data$score)
 
+#
+funding.data$State[funding.data$nm == "B"] <- "b"
+
 
 
 
