@@ -49,3 +49,7 @@ funding.data <- do.call("rbind", list(funding_1995, funding_1996, funding_1997, 
 
 #all funding data together
 funding.data
+
+#writing to .csv
+write.csv(funding.data, file = "funding_data_all_years.csv")
+
