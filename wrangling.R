@@ -75,8 +75,30 @@ all.data$Minimum = as.numeric(gsub('[$,]', '', all.data$Minimum))
 #testing to see if there's a meaningful relationship between average funding and score
 t.test(all.data$Mean, all.data$score)
 
+#run a t-test for data from each year
+library(dplyr)
+#2014
+data.2014 = all.data %>% filter(year == '2014')
+t.test(data.2014$Mean, data.2014$score)
+#2010
+data.2010 = all.data %>% filter(year == '2010')
+t.test(data.2010$Mean, data.2010$score)
+#2005
+data.2005 = all.data %>% filter(year == '2005')
+t.test(data.2005$Mean, data.2005$score)
+#2000
+data.2000 = all.data %>% filter(year == '2000')
+t.test(data.2000$Mean, data.2000$score)
+#1995
+data.1995 = all.data %>% filter(year == '1995')
+t.test(data.1995$Mean, data.1995$score)
 
+#running a t-test on Alabama
+alabama.data = all.data %>% filter(State == 'Alabama')
+t.test(alabama.data$Mean, alabama.data$score)
 
-
+#running a t-test on California
+california.data = all.data %>% filter(State == 'California')
+t.test(california.data$Mean, california.data$score)
 
 
