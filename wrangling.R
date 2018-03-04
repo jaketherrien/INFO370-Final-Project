@@ -65,12 +65,30 @@ funding.data$State[funding.data$State == "National" | funding.data$State == "   
 
 #merge/join the data
 all.data = merge(funding.data, gathered.score.data, by=c("State","year"))
-write.csv(all.data, file = "Data/funding_and_scores.csv")
 
 #convert money to numeric for statistical testing
 all.data$Mean = as.numeric(gsub('[$,]', '', all.data$Mean))
 all.data$Maximum = as.numeric(gsub('[$,]', '', all.data$Maximum))
 all.data$Minimum = as.numeric(gsub('[$,]', '', all.data$Minimum))
+
+#converting funding values to 2014 values, using values from usinflationcalulator.com
+all.data$Mean    <- ifelse(all.data$year == '1995', all.data$Mean*1.5534, all.data$Mean)
+all.data$Mean    <- ifelse(all.data$year == '2000', all.data$Mean*1.3748, all.data$Mean)
+all.data$Mean    <- ifelse(all.data$year == '2005', all.data$Mean*1.2122, all.data$Mean)
+all.data$Mean    <- ifelse(all.data$year == '2010', all.data$Mean*1.0857, all.data$Mean)
+
+all.data$Minimum    <- ifelse(all.data$year == '1995', all.data$Minimum*1.5534, all.data$Minimum)
+all.data$Minimum    <- ifelse(all.data$year == '2000', all.data$Minimum*1.3748, all.data$Minimum)
+all.data$Minimum    <- ifelse(all.data$year == '2005', all.data$Minimum*1.2122, all.data$Minimum)
+all.data$Minimum    <- ifelse(all.data$year == '2010', all.data$Minimum*1.0857, all.data$Minimum)
+
+all.data$Maximum    <- ifelse(all.data$year == '1995', all.data$Maximum*1.5534, all.data$Maximum)
+all.data$Maximum    <- ifelse(all.data$year == '2000', all.data$Maximum*1.3748, all.data$Maximum)
+all.data$Maximum    <- ifelse(all.data$year == '2005', all.data$Maximum*1.2122, all.data$Maximum)
+all.data$Maximum    <- ifelse(all.data$year == '2010', all.data$Maximum*1.0857, all.data$Maximum)
+
+#write all data to csv for further analysis 
+write.csv(all.data, file = "Data/funding_and_scores.csv")
 
 #testing to see if there's a meaningful relationship between average funding and score
 t.test(all.data$Mean, all.data$score)
@@ -100,5 +118,7 @@ t.test(alabama.data$Mean, alabama.data$score)
 #running a t-test on California
 california.data = all.data %>% filter(State == 'California')
 t.test(california.data$Mean, california.data$score)
+
+
 
 
