@@ -47,9 +47,6 @@ funding.data <- do.call("rbind", list(funding_1995, funding_1996, funding_1997, 
                       funding_2007, funding_2008, funding_2009, funding_2010, 
                       funding_2011, funding_2012, funding_2014))
 
-#all funding data together
-funding.data
-
 #writing to .csv
 write.csv(funding.data, file = "Data/funding_data_all_years.csv")
 
@@ -60,8 +57,8 @@ gathered.score.data = gather(score.data, "year", "score", 2:7)
 write.csv(gathered.score.data, file = "Data/score_data_formatted.csv")
 
 #normalize the scores
-gathered.score.data$score    <- ifelse(gathered.data$year == '1995' | gathered.data$year == '2000', gathered.data$score/1600, gathered.data$score)
-gathered.score.data$score    <- ifelse(gathered.data$year == '2005' | gathered.data$year == '2010' | gathered.data$year == '2013' | gathered.data$year == '2014', gathered.data$score/2400, gathered.data$score)
+gathered.score.data$score    <- ifelse(gathered.score.data$year == '1995' | gathered.score.data$year == '2000', gathered.score.data$score/1600, gathered.score.data$score)
+gathered.score.data$score    <- ifelse(gathered.score.data$year == '2005' | gathered.score.data$year == '2010' | gathered.score.data$year == '2013' | gathered.score.data$year == '2014', gathered.score.data$score/2400, gathered.score.data$score)
 
 #formatting funding data "States" to match score data
 funding.data$State[funding.data$State == "National" | funding.data$State == "      National Total" | funding.data$State == "Total" | funding.data$State == "     Total"] <- "United States"
@@ -69,8 +66,58 @@ funding.data$State[funding.data$State == "National" | funding.data$State == "   
 #merge/join the data
 all.data = merge(funding.data, gathered.score.data, by=c("State","year"))
 
+#convert money to numeric for statistical testing
+all.data$Mean = as.numeric(gsub('[$,]', '', all.data$Mean))
+all.data$Maximum = as.numeric(gsub('[$,]', '', all.data$Maximum))
+all.data$Minimum = as.numeric(gsub('[$,]', '', all.data$Minimum))
 
+#converting funding values to 2014 values, using values from usinflationcalulator.com
+all.data$Mean    <- ifelse(all.data$year == '1995', all.data$Mean*1.5534, all.data$Mean)
+all.data$Mean    <- ifelse(all.data$year == '2000', all.data$Mean*1.3748, all.data$Mean)
+all.data$Mean    <- ifelse(all.data$year == '2005', all.data$Mean*1.2122, all.data$Mean)
+all.data$Mean    <- ifelse(all.data$year == '2010', all.data$Mean*1.0857, all.data$Mean)
 
+all.data$Minimum    <- ifelse(all.data$year == '1995', all.data$Minimum*1.5534, all.data$Minimum)
+all.data$Minimum    <- ifelse(all.data$year == '2000', all.data$Minimum*1.3748, all.data$Minimum)
+all.data$Minimum    <- ifelse(all.data$year == '2005', all.data$Minimum*1.2122, all.data$Minimum)
+all.data$Minimum    <- ifelse(all.data$year == '2010', all.data$Minimum*1.0857, all.data$Minimum)
+
+all.data$Maximum    <- ifelse(all.data$year == '1995', all.data$Maximum*1.5534, all.data$Maximum)
+all.data$Maximum    <- ifelse(all.data$year == '2000', all.data$Maximum*1.3748, all.data$Maximum)
+all.data$Maximum    <- ifelse(all.data$year == '2005', all.data$Maximum*1.2122, all.data$Maximum)
+all.data$Maximum    <- ifelse(all.data$year == '2010', all.data$Maximum*1.0857, all.data$Maximum)
+
+#write all data to csv for further analysis 
+write.csv(all.data, file = "Data/funding_and_scores.csv")
+
+#testing to see if there's a meaningful relationship between average funding and score
+t.test(all.data$Mean, all.data$score)
+
+#run a t-test for data from each year
+library(dplyr)
+#2014
+data.2014 = all.data %>% filter(year == '2014')
+t.test(data.2014$Mean, data.2014$score)
+#2010
+data.2010 = all.data %>% filter(year == '2010')
+t.test(data.2010$Mean, data.2010$score)
+#2005
+data.2005 = all.data %>% filter(year == '2005')
+t.test(data.2005$Mean, data.2005$score)
+#2000
+data.2000 = all.data %>% filter(year == '2000')
+t.test(data.2000$Mean, data.2000$score)
+#1995
+data.1995 = all.data %>% filter(year == '1995')
+t.test(data.1995$Mean, data.1995$score)
+
+#running a t-test on Alabama
+alabama.data = all.data %>% filter(State == 'Alabama')
+t.test(alabama.data$Mean, alabama.data$score)
+
+#running a t-test on California
+california.data = all.data %>% filter(State == 'California')
+t.test(california.data$Mean, california.data$score)
 
 
 
