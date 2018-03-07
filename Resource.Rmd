@@ -2,29 +2,41 @@
 title: "Resource"
 output: html_document
 ---
-### Predicting SAT Scores from Education Spending 
+# Predicting SAT Scores from Education Spending 
 
 ## Purpose
 In this project, we have explored the relationship between education spending and SAT scores. Government budgeting is often a hotly-debated topic and legislators want to ensure that increasing spending in certain areas actually has a measurable impact. It is important for legislators to understand how changes in budgeting will impact related outcomes. To address this issue, we will attempt to use machine learning to predict SAT scores using education spending. If our models are accurate, we could determine how proposed budget changes may impact SAT scores, an important metric for measuring student success. 
 
 ## Exploratory Data Analysis
+After collecting our data, we decided to use some simple map visualizations to understand and explore the data. We have created one map to visualize education spending by state and another map to visualize SAT scores by state. The purpose of these visualizations is to show that there is significant variation in the variables we are exploring in this project. In the rest of our report we will continue to investigate these variables furthere and hope to draw some interesting conclusions!
+
+### SAT Scores by State
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 source('ExploratoryDataAnalysis.R')
+score.map()
 ```
 
+This map of the United States shows the average SAT scores by state. The darker the state the lower the average score over 1995-2014 and vice versa. The area with the lowest scores is the District of Columbia, while the area with the highest scores is North Dakota. 
+
+
+### Education Spending by State
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+source('ExploratoryDataAnalysis.R')
+funding.map()
+```
+
+This map of the United States shows the average education spending by state. The darker the state the less they spent on education on average between 1995-2014 and vice versa. The state with the most funding on average is Hawaii, and the state with the least funding on average is Montana. 
 
 ## Questions
 
-# Question 1: 
-Is there a relationship between the amount of money spent on education and the average SAT score by state? 
+**Question 1:** Is there a relationship between the amount of money spent on education and the average SAT score by state? 
 
-# Question 2: 
-Can we predict the average SAT scores based on the amount of school spending?
+**Quesiton 2:** Can we predict the average SAT scores based on the amount of school spending?
 
 
 ## Data
 
-#Spending Data
+### Spending Data
 To explore this topic, we used data from the National Center for Education Statistics. We gathered data related to education expenditures from 1990-2014 and average SAT scores from 1995-2014.  There was an amount of cleaning and organizing that occured in both Excel and R to make the data usable. The dataframe that contained SAT scores was originally constructed with both column headers and row headers; R was not smart enough to tell the difference between the two, so it was necessary to reconstruct the csv file before importing to R. 
 Once both data frames were imported, we combined the yearly spending data into one dataframe. This dataframe had spending data from 1995-2014 for all 50 states, plus the District of Columbia and the national total. 
 
@@ -36,7 +48,7 @@ source('wrangling.R')
 head(funding.data)
 ```
 
-#SAT Score Data
+### SAT Score Data
 
 The SAT score data was organized by year, then by section of the test. Years 1995 and 2000 had a mathematics score and critical reading score; the other years listed, 2005, 2010, 2013, 2014 had an addition critical writing score. Since this new score was added, it was necessary to standardize the scores. We did this by first adding together the scores for each category of the test for each year to get a total score for each year. We then divided the total score across all sections by the total amount of possible points. This bounded all SAT scores between 0 and 1. The total amount of points varied; in years 1995 and 2000 the total possible amount of points earned was 1600, all other years the total possible amount of points earned was 2400. Our final, workable SAT score dataset looked like this:
 
@@ -46,9 +58,39 @@ head(gathered.score.data)
 
 We then merged the two dataframes, joining on state and year. The spending data had more years than the SAT score data;  years that had missing data points were dropped.
 
-Here is our final data frame after wrageling, standardizing, and combining both spending and SAT score data frames:
+Here is our final data frame after warngling, standardizing, and combining both spending and SAT score data frames:
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 head(all.data)
 ```
+## Question 1: 
+Is there a relationship between the amount of money spent on education and the average SAT score by state? 
 
+Linear Regression: Statistical analysis 
+
+To find a relationship between the mean amount of money spent at schools (predictor variable) and the average SAT score (responsive variable), required further exploration of the data. We could see a linear relationship between the two variables. 
+
+We then looked to see if the average SAT scores had a normal distribution; we did this by creating a density plot, shown below. 
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+par(mfrow=c(1, 2))  # divide graph area in 2 columns
+plot(density(all.data$score), main="Density Plot: Score", ylab="Frequency", sub=paste("Skewness:", round(e1071::skewness(all.data$score), 2)))  # density plot for 'speed'
+polygon(density(all.data$score), col="red")
+plot(density(all.data$Mean), main="Density Plot: Mean", ylab="Frequency", sub=paste("Skewness:", round(e1071::skewness(all.data$Mean), 2)))  # density plot for 'dist'
+polygon(density(all.data$Mean), col="red")
+```
+
+Next we used the ‘cor’ method to observe the instance where average SAT scores increase  and the average money spent increase along with it. Our outcome value (-0.253) suggests that the variation in average SAT scores could be explained by an increase in average money spent. Correlation outcomes of greater than 2 or less than -2 signify a meaningful correlation.  
+
+Finally, we had enough information to build and use a linear model to measure the correlation between or predictor and response variables. Below is a summary of our regression. 
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+summary(linearMod)
+```
+
+Our small p-value (.00003558)  and relatively high t-value indicate we can safely accept the alternate hypothesis. Findings show there is a relationship between the average amount of money spent and average SAT scores. Below are some predictions made with our linear model:
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+plot(predict(linearMod),all.data$score,
+     xlab="predicted", ylab="actual")
+```

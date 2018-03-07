@@ -39,8 +39,7 @@ score.map = function(){
   tmp = map('state',plot=FALSE,namesonly=TRUE)
   tmp = match(gsub('(:.*)','',tmp),tolower(state.name))
   colors = (us.scores$sum - min(us.scores$sum)) / (max(us.scores$sum) - min(us.scores$sum))
-  m = map('state',fill=TRUE,col= gray(colors)[tmp])
-  return(m)
+  map('state',fill=TRUE,col= gray(colors)[tmp])
 }
 
 # This map of the United States shows the average funding by state. 
@@ -51,7 +50,6 @@ funding.map = function(){
   
   funding.values = funding %>% group_by(State) %>% summarise(total = mean(Average) * mean(Number.of.districts)) %>% filter(!(trimws(State) %in% c("National Total", "National", "Total", "District of Columbia")))
   colors = (funding.values$total - min(funding.values$total)) / (max(funding.values$total) - min(funding.values$total))
-  m = map('state',fill=TRUE,col= gray(colors)[tmp])
-  return(m)
+  map('state',fill=TRUE,col= gray(colors)[tmp])
 }
 

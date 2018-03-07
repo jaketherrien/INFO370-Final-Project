@@ -60,7 +60,7 @@ write.csv(gathered.score.data, file = "Data/score_data_formatted.csv")
 gathered.score.data$score    <- ifelse(gathered.score.data$year == '1995' | gathered.score.data$year == '2000', gathered.score.data$score/1600, gathered.score.data$score)
 gathered.score.data$score    <- ifelse(gathered.score.data$year == '2005' | gathered.score.data$year == '2010' | gathered.score.data$year == '2013' | gathered.score.data$year == '2014', gathered.score.data$score/2400, gathered.score.data$score)
 
-colnames(funding.data)[colnames(funding.data) == 'ï..State'] <- 'State'
+colnames(funding.data)[colnames(funding.data) == '?..State'] <- 'State'
 #formatting funding data "States" to match score data
 funding.data$State[funding.data$State == "National" | funding.data$State == "      National Total" | funding.data$State == "Total" | funding.data$State == "     Total"] <- "United States"
 
@@ -97,7 +97,9 @@ scatter.smooth(x=all.data$Mean, y=all.data$score, main="mean ~ score")  # scatte
 cor(all.data$Mean, all.data$score)
 
 # Density plot to check that response variable is close to normal, it is :)
+# install.packages('e1071', repos = "http://cran.us.r-project.org")
 library(e1071)
+dev.off()
 par(mfrow=c(1, 2))  # divide graph area in 2 columns
 plot(density(all.data$score), main="Density Plot: Score", ylab="Frequency", sub=paste("Skewness:", round(e1071::skewness(all.data$score), 2)))  # density plot for 'speed'
 polygon(density(all.data$score), col="red")
