@@ -1,10 +1,17 @@
-#install.packages("maps")
+# install.packages("maps")
 library(dplyr)
 library(maps)
+library(grDevices)
 funding = read.csv("Data/funding_data_all_years.csv", stringsAsFactors = F) %>% select(-X)
 colnames(funding)[colnames(funding)=="Mean"] = "Average"
 scores = read.csv("Data/scores_data.csv", stringsAsFactors = F)
 scores = scores %>% mutate(sum = X1995 + X2000 + X2005 + X2010 + X2013 + X2014)
+
+#convert to numbers
+funding$Average = as.numeric(gsub('[$,]', '', funding$Average))
+funding$Number.of.districts = as.numeric(gsub('[$,]', '', funding$Number.of.districts))
+
+
 
 # On average, the lowest SAT scores are from the District of Columbia
 #kable
@@ -37,6 +44,7 @@ score.map = map('state',fill=TRUE,col= gray(colors)[tmp])
 # The darker the state the less funding they received and vice versa.
 tmp = map('state',plot=FALSE,namesonly=TRUE)
 tmp = match(gsub('(:.*)','',tmp),tolower(state.name))
+
 funding.map = funding %>% group_by(State) %>% summarise(total = mean(Average) * mean(Number.of.districts)) %>% filter(!(trimws(State) %in% c("National Total", "National", "Total", "District of Columbia")))
 colors = (funding.map$total - min(funding.map$total)) / (max(funding.map$total) - min(funding.map$total))
-score.map = map('state',fill=TRUE,col= gray(colors)[tmp])
+funding2.map = map('state',fill=TRUE,col= gray(colors)[tmp])
