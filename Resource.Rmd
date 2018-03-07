@@ -1,0 +1,54 @@
+---
+title: "Resource"
+output: html_document
+---
+### Predicting SAT Scores from Education Spending 
+
+## Purpose
+In this project, we have explored the relationship between education spending and SAT scores. Government budgeting is often a hotly-debated topic and legislators want to ensure that increasing spending in certain areas actually has a measurable impact. It is important for legislators to understand how changes in budgeting will impact related outcomes. To address this issue, we will attempt to use machine learning to predict SAT scores using education spending. If our models are accurate, we could determine how proposed budget changes may impact SAT scores, an important metric for measuring student success. 
+
+## Exploratory Data Analysis
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+source('ExploratoryDataAnalysis.R')
+```
+
+
+## Questions
+
+# Question 1: 
+Is there a relationship between the amount of money spent on education and the average SAT score by state? 
+
+# Question 2: 
+Can we predict the average SAT scores based on the amount of school spending?
+
+
+## Data
+
+#Spending Data
+To explore this topic, we used data from the National Center for Education Statistics. We gathered data related to education expenditures from 1990-2014 and average SAT scores from 1995-2014.  There was an amount of cleaning and organizing that occured in both Excel and R to make the data usable. The dataframe that contained SAT scores was originally constructed with both column headers and row headers; R was not smart enough to tell the difference between the two, so it was necessary to reconstruct the csv file before importing to R. 
+Once both data frames were imported, we combined the yearly spending data into one dataframe. This dataframe had spending data from 1995-2014 for all 50 states, plus the District of Columbia and the national total. 
+
+Since our goal was to build a predictive model that could accurately predict SAT scores based on the amount of money available for education, we needed to think about the spending power of a dollar. Our dataset spanned over 20 years, and a dollar in 1995 could buy considerably more than a dollar in 2014. To account for this discrepancy, we multiplied the mean amount of money spent by the inflation rate between that year and year 2014. This normalized the mean amount for each year so that the spending power is the same for each year. Bellow is the final spending dataset used:     
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+source('wrangling.R')
+head(funding.data)
+```
+
+#SAT Score Data
+
+The SAT score data was organized by year, then by section of the test. Years 1995 and 2000 had a mathematics score and critical reading score; the other years listed, 2005, 2010, 2013, 2014 had an addition critical writing score. Since this new score was added, it was necessary to standardize the scores. We did this by first adding together the scores for each category of the test for each year to get a total score for each year. We then divided the total score across all sections by the total amount of possible points. This bounded all SAT scores between 0 and 1. The total amount of points varied; in years 1995 and 2000 the total possible amount of points earned was 1600, all other years the total possible amount of points earned was 2400. Our final, workable SAT score dataset looked like this:
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+head(gathered.score.data)
+```
+
+We then merged the two dataframes, joining on state and year. The spending data had more years than the SAT score data;  years that had missing data points were dropped.
+
+Here is our final data frame after wrageling, standardizing, and combining both spending and SAT score data frames:
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+head(all.data)
+```
+
