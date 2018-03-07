@@ -35,16 +35,23 @@ us.scores = scores %>% filter(State != "District of Columbia" & State != "United
 
 # This map of the United States shows the average SAT scores by state. 
 # The darker the state the lower the average score and vice versa.
-tmp = map('state',plot=FALSE,namesonly=TRUE)
-tmp = match(gsub('(:.*)','',tmp),tolower(state.name))
-colors = (us.scores$sum - min(us.scores$sum)) / (max(us.scores$sum) - min(us.scores$sum))
-score.map = map('state',fill=TRUE,col= gray(colors)[tmp])
+score.map = function(){
+  tmp = map('state',plot=FALSE,namesonly=TRUE)
+  tmp = match(gsub('(:.*)','',tmp),tolower(state.name))
+  colors = (us.scores$sum - min(us.scores$sum)) / (max(us.scores$sum) - min(us.scores$sum))
+  m = map('state',fill=TRUE,col= gray(colors)[tmp])
+  return(m)
+}
 
 # This map of the United States shows the average funding by state. 
 # The darker the state the less funding they received and vice versa.
-tmp = map('state',plot=FALSE,namesonly=TRUE)
-tmp = match(gsub('(:.*)','',tmp),tolower(state.name))
+funding.map = function(){
+  tmp = map('state',plot=FALSE,namesonly=TRUE)
+  tmp = match(gsub('(:.*)','',tmp),tolower(state.name))
+  
+  funding.values = funding %>% group_by(State) %>% summarise(total = mean(Average) * mean(Number.of.districts)) %>% filter(!(trimws(State) %in% c("National Total", "National", "Total", "District of Columbia")))
+  colors = (funding.values$total - min(funding.values$total)) / (max(funding.values$total) - min(funding.values$total))
+  m = map('state',fill=TRUE,col= gray(colors)[tmp])
+  return(m)
+}
 
-funding.map = funding %>% group_by(State) %>% summarise(total = mean(Average) * mean(Number.of.districts)) %>% filter(!(trimws(State) %in% c("National Total", "National", "Total", "District of Columbia")))
-colors = (funding.map$total - min(funding.map$total)) / (max(funding.map$total) - min(funding.map$total))
-funding2.map = map('state',fill=TRUE,col= gray(colors)[tmp])
