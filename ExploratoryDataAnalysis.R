@@ -14,7 +14,7 @@ min.mean = scores %>% filter((sum) == min(sum)) %>% select (-sum)
 #kable
 max.mean = scores %>% filter((sum) == max(sum)) %>% select (-sum)
 
-average.funding.by.state = funding %>% group_by(State) %>% summarise(avg.funding = mean(Average)) %>% filter(!(State %in% c("National Total", "National", "Total")))
+average.funding.by.state = funding %>% group_by(State) %>% summarise(avg.funding = mean(Average)) %>% filter(!(trimws(State) %in% c("National Total", "National", "Total", "District of Columbia")))
 
 # On average, the state with the least funding is Montana
 #kable
@@ -33,3 +33,10 @@ tmp = match(gsub('(:.*)','',tmp),tolower(state.name))
 colors = (us.scores$sum - min(us.scores$sum)) / (max(us.scores$sum) - min(us.scores$sum))
 score.map = map('state',fill=TRUE,col= gray(colors)[tmp])
 
+# This map of the United States shows the average funding by state. 
+# The darker the state the less funding they received and vice versa.
+tmp = map('state',plot=FALSE,namesonly=TRUE)
+tmp = match(gsub('(:.*)','',tmp),tolower(state.name))
+funding.map = funding %>% group_by(State) %>% summarise(total = mean(Average) * mean(Number.of.districts)) %>% filter(!(trimws(State) %in% c("National Total", "National", "Total", "District of Columbia")))
+colors = (funding.map$total - min(funding.map$total)) / (max(funding.map$total) - min(funding.map$total))
+score.map = map('state',fill=TRUE,col= gray(colors)[tmp])
