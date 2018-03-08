@@ -10,19 +10,20 @@ In this project, we have explored the relationship between education spending an
 ## Exploratory Data Analysis
 After collecting our data, we decided to use some simple map visualizations to understand and explore the data. We have created one map to visualize education spending by state and another map to visualize SAT scores by state. The purpose of these visualizations is to show that there is significant variation in the variables we are exploring in this project. In the rest of our report we will continue to investigate these variables furthere and hope to draw some interesting conclusions!
 
-### SAT Scores by State
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 source('ExploratoryDataAnalysis.R')
 score.map()
+title(main="Average SAT Score by State, 1995-2014")
+
 ```
 
 This map of the United States shows the average SAT scores by state. The darker the state the lower the average score over 1995-2014 and vice versa. The area with the lowest scores is the District of Columbia, while the area with the highest scores is North Dakota. 
 
 
-### Education Spending by State
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 source('ExploratoryDataAnalysis.R')
 funding.map()
+title(main="Average Education Spending by State, 1995-2014")
 ```
 
 This map of the United States shows the average education spending by state. The darker the state the less they spent on education on average between 1995-2014 and vice versa. The state with the most funding on average is Hawaii, and the state with the least funding on average is Montana. 
@@ -88,11 +89,12 @@ Finally, we had enough information to build and use a linear model to measure th
 summary(linearMod)
 ```
 
-Our small p-value (.00003558)  and relatively high t-value indicate we can safely accept the alternate hypothesis. Findings show there is a relationship between the average amount of money spent and average SAT scores. Below are some predictions made with our linear model:
+Our small p-value (.00003558)  and relatively high t-value indicate we can safely accept the alternate hypothesis. Findings show there is a relationship between the average amount of money spent and average SAT scores. Below are some predictions made with our linear model, not very accurate:
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 plot(predict(linearMod),all.data$score,
      xlab="predicted", ylab="actual")
+title(main="Predicted Scores vs. Actual Scores 2014")
 ```
 
 ## Question 2: 
@@ -101,5 +103,6 @@ Can we predict the average SAT scores based on the amount of school spending?
 Now that we have proven that there is a significant relationship between education spending and SAT scores, we will attempt to answer our second question, which is related to predicting SAT scores with spending data. In order to address this question, we will be breaking up our training and testing data based on the year. We will define our training data as data from 1995, 2000, 2005, and 2010. Our testing data will be data from 2014. In summary, we will be trying to predict the 2014 SAT scores using 2014 spending data with a model trained on data from 1995, 2000, 2005, and 2010. 
 
 For our classifiers, we have chosen Lasso, Elastic Net, and RidgeRegression. These three classifiers were selected because they are well suited for regression rather than classification. Lasso and Elastic Net are recommended for datasets with few important features, while RidgeRegression is well suited for datasets with many important features. Since we really didn't have much of an idea how many or which features would be important, we chose to cover our bases by selecting these three classifiers. We selected our classifiers based on this estimator selection guide from [Scikit Learn](http://scikit-learn.org/stable/tutorial/machine_learning_map/).
+
 
 In conclusion, we have shown that there is a significant relationship between education spending and SAT scores, but that spending amount alone is not a strong predictor of test scores. This conclusion makes sense, there are many factors, including education spending, that likely have an impact on student performance on standardized tests. Some other factors that we would want to include to better predict test scores include socioeconomic status, family life, student location, and advancement of technology. There is also a point to be made about SAT scores and how they may not be the best measure of student performance or success. It is certainly possible to be a great student and test poorly on the SAT. In conclusion, this was a great exercise for us to apply statistics and machine learning to learn more about how education spending and standardized test performance are related.
