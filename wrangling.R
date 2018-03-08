@@ -60,6 +60,7 @@ write.csv(gathered.score.data, file = "Data/score_data_formatted.csv")
 gathered.score.data$score    <- ifelse(gathered.score.data$year == '1995' | gathered.score.data$year == '2000', gathered.score.data$score/1600, gathered.score.data$score)
 gathered.score.data$score    <- ifelse(gathered.score.data$year == '2005' | gathered.score.data$year == '2010' | gathered.score.data$year == '2013' | gathered.score.data$year == '2014', gathered.score.data$score/2400, gathered.score.data$score)
 
+colnames(funding.data)[colnames(funding.data) == '?..State'] <- 'State'
 #formatting funding data "States" to match score data
 funding.data$State[funding.data$State == "National" | funding.data$State == "      National Total" | funding.data$State == "Total" | funding.data$State == "     Total"] <- "United States"
 
@@ -89,6 +90,36 @@ all.data$Maximum    <- ifelse(all.data$year == '2010', all.data$Maximum*1.0857, 
 
 #write all data to csv for further analysis 
 write.csv(all.data, file = "Data/funding_and_scores.csv")
+
+scatter.smooth(x=all.data$Mean, y=all.data$score, main="mean ~ score")  # scatterplot
+
+# testing to see if correlation cor -0.253 
+cor(all.data$Mean, all.data$score)
+
+# Density plot to check that response variable is close to normal, it is :)
+# install.packages('e1071', repos = "http://cran.us.r-project.org")
+library(e1071)
+dev.off()
+par(mfrow=c(1, 2))  # divide graph area in 2 columns
+plot(density(all.data$score), main="Density Plot: Score", ylab="Frequency", sub=paste("Skewness:", round(e1071::skewness(all.data$score), 2)))  # density plot for 'speed'
+polygon(density(all.data$score), col="red")
+plot(density(all.data$Mean), main="Density Plot: Mean", ylab="Frequency", sub=paste("Skewness:", round(e1071::skewness(all.data$Mean), 2)))  # density plot for 'dist'
+polygon(density(all.data$Mean), col="red")
+
+
+
+# Regression to check and see any relation between Score and mean 
+linearMod <- lm(score ~ Mean, data=all.data)
+summary(linearMod)
+
+# making predictions
+preds.w.plim <- predict(lm(all.data$Mean ~ all.data$score), interval="prediction")
+preds.w.clim <- predict(lm(all.data$Mean ~ all.data$score), interval="confidence")
+
+#plotting predictions against actual score
+plot(predict(linearMod),all.data$score,
+     xlab="predicted", ylab="actual")
+
 
 #testing to see if there's a meaningful relationship between average funding and score
 t.test(all.data$Mean, all.data$score)
