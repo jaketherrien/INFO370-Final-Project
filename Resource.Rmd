@@ -104,5 +104,25 @@ Now that we have proven that there is a significant relationship between educati
 
 For our classifiers, we have chosen Lasso, Elastic Net, and RidgeRegression. These three classifiers were selected because they are well suited for regression rather than classification. Lasso and Elastic Net are recommended for datasets with few important features, while RidgeRegression is well suited for datasets with many important features. Since we really didn't have much of an idea how many or which features would be important, we chose to cover our bases by selecting these three classifiers. We selected our classifiers based on this estimator selection guide from [Scikit Learn](http://scikit-learn.org/stable/tutorial/machine_learning_map/).
 
+We used Python to run our machine learnings, the Jupyter notebook in in our Github repository contains all of the code. Below are images from the results of our machine learning analysis. 
+
+![Accuracy results from our three models](images/accuracy results.png)
+
+### Predicted SAT Score Distribution vs. Actual SAT Score Distribution
+
+![](images/all graphs.png)
+
+### Lasso Predicted Scores vs. Actual SAT Scores
+
+![](images/lasso.png)
+
+### Ridge Predicted Scores vs. Actual SAT Scores
+
+![](images/elastic net.png)
+
+### Elastic Net Predicted Scores vs. Actual SAT Scores
+
+![](images/ridge.png)
+During our machine learning process, we built a pipeline and used grid search for cross-validation. Our models were not successful at predicting SAT scores, the best model was only 9.8% accurate. 
 
 In conclusion, we have shown that there is a significant relationship between education spending and SAT scores, but that spending amount alone is not a strong predictor of test scores. This conclusion makes sense, there are many factors, including education spending, that likely have an impact on student performance on standardized tests. Some other factors that we would want to include to better predict test scores include socioeconomic status, family life, student location, and advancement of technology. There is also a point to be made about SAT scores and how they may not be the best measure of student performance or success. It is certainly possible to be a great student and test poorly on the SAT. In conclusion, this was a great exercise for us to apply statistics and machine learning to learn more about how education spending and standardized test performance are related.
